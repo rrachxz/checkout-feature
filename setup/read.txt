@@ -1,0 +1,28 @@
+# CARA MENYAMBUNGKAN FORM KE GOOGLE SPREADSHEET
+
+1. Buat Google Sheet
+   - Buat kolom tanggal, nama, no.hp, jumlah pengguna, nama perusahaan, alamat perusahaan, no. telp kantor, email kantor, jabatan/posisi, harga
+
+2. Buka Extensions > App Script di Google Spreadsheet
+
+3. Beri nama project
+
+4. Copy paste kode yang ada di appscript.js
+
+5. Tambahkan paste sheet id:
+   -> cara mendapatkan sheet id
+
+   -> lihat pada url dan copy kode yang berada diantara d/.../id
+      cth: https://docs.google.com/spreadsheets/d/[1FbgPJtpNN6xo35nyVcaZJPsAKCJ_aKnQroNB93ltits]/edit?gid=0#gid=0
+
+   -> Sheet id terdapat didalam kurung siku
+
+7. Atur trigger (logo jam beker), tambah trigger, dan setting trigger sprti di setting trigger.png
+
+8. Run dan pastikan tidak ada error
+
+9. Deploy dan copy Web App Url dari app script
+
+10. Paste Web App Url ke form action dan kode javascript di function fetch
+
+11. Form HTML dapat terhubung ke google spreadsheet
