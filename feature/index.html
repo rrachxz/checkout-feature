@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Standard User Pricing</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .pricing-card {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        text-align: center;
+        padding: 20px;
+        width: 300px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+      .pricing-control {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        margin: 20px 0;
+      }
+      .pricing-control button {
+        border: 1px solid #ddd;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        font-size: 18px;
+        background-color: #fff;
+        cursor: pointer;
+      }
+      .pricing-control input {
+        width: 40px;
+        text-align: center;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 4px;
+      }
+      .price {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 20px 0;
+      }
+      .button-container button {
+        background-color: #e63946;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 20px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      /* MODAL STYLING */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      /* Centered Modal */
+      .modal-content {
+        background: white;
+        width: 50%;
+        max-width: 500px;
+        border-radius: 10px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        max-height: 80vh;
+        overflow: hidden;
+      }
+
+      /* Responsive modal size */
+      @media (max-width: 768px) {
+        .modal-content {
+          width: 85%;
+          max-width: 400px;
+        }
+      }
+
+      /* Header (Sticky) */
+      .modal-header {
+        padding: 15px;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        justify-content: center;
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 10;
+      }
+
+      /* Close Button */
+      .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        font-size: 24px;
+        cursor: pointer;
+      }
+
+      /* Form Body (Scrollable) */
+      .modal-body {
+        padding: 20px;
+        overflow-y: auto;
+        flex-grow: 1;
+      }
+
+      /* Ensure scrolling works properly */
+      .modal-content {
+        display: flex;
+        flex-direction: column;
+        max-height: 80vh;
+      }
+
+      /* Form Layout */
+      .form-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .form-group div {
+        width: 48%;
+      }
+
+      /* full width inputs on small screens */
+      @media (max-width: 800px) {
+        .form-group div {
+          width: 100%;
+        }
+      }
+
+      /* Input Styling */
+      .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        margin-top: 5px;
+        box-sizing: border-box;
+        /* Ensure placeholder text is responsive */
+        box-sizing: border-box;
+        font-size: 14px;
+        word-wrap: break-word;
+      }
+
+      /* Placeholder Styling for responsiveness */
+      .form-group input::placeholder {
+        font-size: 14px;
+        color: #aaa;
+      }
+
+      /* Footer (Sticky) */
+      .modal-footer {
+        padding: 15px;
+        border-top: 1px solid #ddd;
+        background: white;
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
+      }
+
+      /* Submit Button */
+      .submit-btn {
+        background-color: #2c3fe8;
+        color: white;
+        padding: 12px;
+        border: none;
+        width: 100%;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: 0.3s;
+      }
+
+      .submit-btn:hover {
+        background-color: #1d2fb4;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="pricing-card">
+      <h2>Standard User</h2>
+      <p>
+        Person with full access to all business functions available in the
+        edition across all apps in Vtiger
+      </p>
+      <div class="pricing-control">
+        <button id="decrement">-</button>
+        <input type="text" id="userCount" value="1" readonly />
+        <button id="increment">+</button>
+      </div>
+      <div class="price" id="price">IDR 300.000</div>
+      <div class="button-container">
+        <button id="openModal">Start Free Trial</button>
+      </div>
+    </div>
+
+    <!-- MODAL FORM -->
+    <form
+      action="https://script.google.com/macros/s/AKfycbzprpg2a6EpQq3jbyQg52_vD3oHjrh4-GfSaSmm4WK5ihJWlZzf5m-AcXbeXUYLH5zcIw/exec" 
+      class="modal"
+      id="formModal"
+    >
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Form Registrasi</h3>
+          <span class="close" id="closeModal">&times;</span>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <div>
+                <label>Nama Pengguna</label
+                ><input
+                  id="nama"
+                  type="text"
+                  required
+                  placeholder="Masukkan Nama Pengguna"
+                />
+              </div>
+              <div>
+                <label>No. HP</label
+                ><input
+                  type="tel"
+                  id="no_hp"
+                  required
+                  placeholder="Masukkan No. HP"
+                />
+              </div>
+              <div>
+                <label>Jumlah Pengguna</label
+                ><input
+                  type="text"
+                  id="modalUserCount"
+                  readonly
+                  placeholder="Jumlah Pengguna"
+                />
+              </div>
+              <div>
+                <label>Nama Perusahaan</label
+                ><input
+                  type="text"
+                  id="perusahaan"
+                  required
+                  placeholder="Masukkan Nama Perusahaan"
+                />
+              </div>
+              <div>
+                <label>Alamat Perusahaan</label
+                ><input
+                  type="text"
+                  id="alamat"
+                  required
+                  placeholder="Masukkan Alamat Perusahaan"
+                />
+              </div>
+              <div>
+                <label>No. Telp Kantor</label
+                ><input
+                  type="tel"
+                  id="hp_kantor"
+                  required
+                  placeholder="Masukkan No. HP Kantor"
+                />
+              </div>
+              <div>
+                <label>Email Kantor</label
+                ><input
+                  type="email"
+                  id="email"
+                  required
+                  placeholder="Masukkan Email Kantor"
+                />
+              </div>
+              <div>
+                <label>Jabatan / Posisi</label
+                ><input
+                  type="text"
+                  id="jabatan"
+                  required
+                  placeholder="Masukkan Jabatan / Posisi"
+                />
+              </div>
+              <div>
+                <label>Harga</label
+                ><input
+                  type="text"
+                  id="modalPrice"
+                  readonly
+                  placeholder="Harga"
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            onclick="sendToWhatsapp(); sendToGoogleSheets();"
+            type="submit"
+            class="submit-btn"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <script>
+      document.getElementById("increment").addEventListener("click", () => {
+        let userCount = parseInt(document.getElementById("userCount").value);
+        userCount++;
+        document.getElementById("userCount").value = userCount;
+        document.getElementById("price").innerText = `IDR ${(
+          userCount * 300000 
+        ).toLocaleString("id-ID")}`;
+      });
+
+      document.getElementById("decrement").addEventListener("click", () => {
+        let userCount = parseInt(document.getElementById("userCount").value);
+        if (userCount > 1) {
+          userCount--;
+          document.getElementById("userCount").value = userCount;
+          document.getElementById("price").innerText = `IDR ${(
+            userCount * 300000
+          ).toLocaleString("id-ID")}`;
+        }
+      });
+
+      // Update modal values when opening
+      document.getElementById("openModal").addEventListener("click", () => {
+        document.getElementById("modalUserCount").value =
+          document.getElementById("userCount").value;
+        document.getElementById("modalPrice").value = `IDR ${(
+          document.getElementById("userCount").value * 300000
+        ).toLocaleString("id-ID")}`;
+        document.getElementById("formModal").style.display = "flex";
+      });
+
+      // Close modal
+      document.getElementById("closeModal").addEventListener("click", () => {
+        document.getElementById("formModal").style.display = "none";
+      });
+
+      //send to whatsapp
+      function sendToWhatsapp() {
+        let number = "+628129722173"; // rubah nomor hp disini
+
+        let nama = document.getElementById("nama").value;
+        let no_hp = document.getElementById("no_hp").value;
+        let users = document.getElementById("modalUserCount").value;
+        let perusahaan = document.getElementById("perusahaan").value;
+        let alamat = document.getElementById("alamat").value;
+        let hp_kantor = document.getElementById("hp_kantor").value;
+        let email = document.getElementById("email").value;
+        let jabatan = document.getElementById("jabatan").value;
+        let harga = document.getElementById("modalPrice").value;
+
+        let message =
+          `*Konfirmasi Berlangganan dari ${nama}*%0A` +
+          `Berikut ini data pelanggan yang telah mengajukan permohonan berlangganan:%0A%0A` +
+          `Nama: *${nama}*%0A` +
+          `No. HP: *${no_hp}*%0A` +
+          `Jumlah Pengguna: *${users}*%0A` +
+          `Perusahaan: *${perusahaan}*%0A` +
+          `Alamat: *${alamat}*%0A` +
+          `No. Telp Kantor: *${hp_kantor}*%0A` +
+          `Email: *${email}*%0A` +
+          `Jabatan: *${jabatan}*%0A` +
+          `Harga: *${harga}*%0A%0A` +
+          `Mohon konfirmasi lebih lanjut. Terima kasih.`;
+
+        let url = `https://wa.me/${number}?text=${message}`;
+
+        window.open(url, "_blank").focus();
+      }
+
+      //send to google sheets
+      function sendToGoogleSheets() {
+        let formData = {
+          nama: document.getElementById("nama").value,
+          no_hp: document.getElementById("no_hp").value,
+          users: document.getElementById("modalUserCount").value,
+          perusahaan: document.getElementById("perusahaan").value,
+          alamat: document.getElementById("alamat").value,
+          hp_kantor: document.getElementById("hp_kantor").value,
+          email: document.getElementById("email").value,
+          jabatan: document.getElementById("jabatan").value,
+          harga: document.getElementById("modalPrice").value,
+        };
+
+        fetch(
+          "https://script.google.com/macros/s/AKfycbzprpg2a6EpQq3jbyQg52_vD3oHjrh4-GfSaSmm4WK5ihJWlZzf5m-AcXbeXUYLH5zcIw/exec",
+          {
+            method: "POST",
+            mheaders: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          }
+        )
+          .then((response) => response.text()) // Mengambil respons teks
+          .then(() => {
+            alert("Data berhasil dikirim!");
+          })
+          .catch((err) => {
+            console.error("Error:", err);
+            alert("Gagal mengirim data!");
+          });
+      }
+    </script>
+  </body>
+</html>
